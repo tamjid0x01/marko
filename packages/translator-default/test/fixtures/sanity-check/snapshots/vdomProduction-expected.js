@@ -25,9 +25,9 @@ const _marko_node3 = _marko_createElement("div", null, "13", null, 0, 0);
 import _other from "./components/other/index.marko";
 import _marko_tag from "marko/dist/runtime/helpers/render-tag";
 
-const _marko_node4 = _marko_createElement("div", null, "15", null, 0, 0);
+const _marko_node4 = _marko_createElement("div", null, "17", null, 0, 0);
 
-const _marko_node5 = _marko_createElement("div", null, "17", null, 0, 0);
+const _marko_node5 = _marko_createElement("div", null, "18", null, 0, 0);
 
 const _marko_node6 = _marko_createElement("div", null, "19", null, 0, 0);
 
@@ -135,7 +135,7 @@ _marko_template._ = _marko_renderer(function (input, out, _component, component,
       "d": {
         "d": 1,
         "renderBody": out => {
-          out.n(_marko_node6, component);
+          out.n(_marko_node4, component);
         }
       },
       "renderBody": out => {
@@ -143,7 +143,7 @@ _marko_template._ = _marko_renderer(function (input, out, _component, component,
       }
     },
     "renderBody": (out, b) => {
-      out.n(_marko_node4, component);
+      out.n(_marko_node6, component);
     }
   }, out, _component, "14");
 

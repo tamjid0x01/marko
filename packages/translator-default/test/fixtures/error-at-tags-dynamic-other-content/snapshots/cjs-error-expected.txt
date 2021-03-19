@@ -1,0 +1,8 @@
+packages/translator-default/test/fixtures/error-at-tags-dynamic-other-content/template.marko(3,9): @tags and other rendered content cannot be mixed under a control flow.
+  1 | <hello>
+  2 |     <if(x)>
+> 3 |         <@foo>Foo!</@foo>
+    |         ^
+  4 |         Bad!
+  5 |     </if>
+  6 | </hello>

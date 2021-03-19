@@ -1,0 +1,7 @@
+packages/translator-default/test/fixtures/error-at-tags-after-other-content/template.marko(2,5): @tags must precede all other rendered content.
+  1 | <hello>
+> 2 |     Bad!
+    |     ^
+  3 |     <if(x)>
+  4 |         <@foo>Foo!</@foo>
+  5 |     </if>

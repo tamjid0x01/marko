@@ -43,7 +43,7 @@ export default function (path) {
       for (let i = body.length; i--; ) {
         const child = body[i];
         if (isAttributeTagChild(child)) {
-          child.insertAfter(t.stringLiteral("END_ATTRIBUTE_TAGS"));
+          child.insertAfter(stringStatement("END_ATTRIBUTE_TAGS"));
           break;
         }
       }
@@ -125,6 +125,10 @@ export default function (path) {
       )
     );
   }
+}
+
+function stringStatement(value) {
+  return t.expressionStatement(t.stringLiteral(value));
 }
 
 function isAttributeTagChild(tag) {

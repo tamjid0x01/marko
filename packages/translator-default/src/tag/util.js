@@ -1,5 +1,10 @@
 import { types as t } from "@marko/compiler";
-import { getTagDef } from "@marko/babel-utils";
+import {
+  getTagDef,
+  isAttributeTag,
+  isNativeTag,
+  isTransparentTag
+} from "@marko/babel-utils";
 
 export function getAttrs(path, preserveNames, skipRenderBody) {
   const { node } = path;
@@ -71,13 +76,11 @@ export function getAttrs(path, preserveNames, skipRenderBody) {
     let endDynamicAttrTagsIndex = -1;
 
     if (hasDynamicAttrTags) {
-      endDynamicAttrTagsIndex = findLastIndex(
-        body,
-        ({ value }) => value === "END_ATTRIBUTE_TAGS"
-      );
+      endDynamicAttrTagsIndex = findLastIndex(body, isEndAttributeTags);
+
       path
         .insertBefore(body.slice(0, endDynamicAttrTagsIndex))
-        .map(child => child.skip());
+        .forEach(child => child.skip());
     }
 
     if (!hasDynamicAttrTags || endDynamicAttrTagsIndex !== childLen - 1) {
@@ -183,8 +186,63 @@ export function evaluateAttr(attr) {
   };
 }
 
+export function checkMixedAttrTagContent(tag) {
+  if (!isNativeTag(tag)) {
+    const body = tag.get("body").get("body");
+    let foundAttrTag = false;
+
+    for (let i = body.length; i--; ) {
+      const child = body[i];
+
+      if (isAttributeTagChild(child)) {
+        foundAttrTag = true;
+      } else if (foundAttrTag && (child.isMarkoTag() || child.isMarkoText())) {
+        throw child.buildCodeFrameError(
+          "@tags must precede all other rendered content."
+        );
+      }
+    }
+  }
+}
+
+function isAttributeTagChild(tag) {
+  if (isAttributeTag(tag)) {
+    return true;
+  }
+
+  if (isTransparentTag(tag)) {
+    const body = tag.get("body").get("body");
+
+    let hasAttrTags = false;
+    let hasBodyContent = false;
+    for (let i = body.length; i--; ) {
+      if (isAttributeTagChild(body[i])) {
+        hasAttrTags = true;
+      } else {
+        hasBodyContent = true;
+      }
+
+      if (hasAttrTags && hasBodyContent) {
+        throw body[i].buildCodeFrameError(
+          "@tags and other rendered content cannot be mixed under a control flow."
+        );
+      }
+    }
+
+    return !hasBodyContent;
+  }
+
+  return false;
+}
+
 function camelCase(string) {
   return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+function isEndAttributeTags(node) {
+  return (
+    node && node.expression && node.expression.value === "END_ATTRIBUTE_TAGS"
+  );
 }
 
 function findLastIndex(arr, check) {

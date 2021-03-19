@@ -29,6 +29,7 @@ import { analyzeStaticVDOM } from "./util/optimize-vdom-create";
 import { optimizeHTMLWrites } from "./util/optimize-html-writes";
 import getComponentFiles from "./util/get-component-files";
 import addDependencies from "./util/add-dependencies";
+import { checkMixedAttrTagContent } from "./tag/util";
 
 export { default as taglibs } from "./taglib";
 
@@ -108,6 +109,8 @@ export const analyze = {
         }
       }
     }
+
+    checkMixedAttrTagContent(tag);
 
     if (
       meta.hasStatefulTagParams ||
